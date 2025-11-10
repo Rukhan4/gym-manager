@@ -18,10 +18,6 @@ Gym Manager is a web application designed to manage gym members and their subscr
 | Database      | MySQL                        |
 | Containerized | Laravel Sail (Docker)        |
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
 ## Database Schema
 
 ### Subscriptions Table
@@ -45,3 +41,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 | subscription_id | foreign key | References `subscriptions.id` |
 | created_at      | datetime    | Timestamp created             |
 | updated_at      | datetime    | Timestamp updated             |
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
