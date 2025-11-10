@@ -4,13 +4,9 @@ Gym Manager is a web application designed to manage gym members and their subscr
 
 ## Features
 
--   Manage gym members
--   Manage subscription plans (daily, monthly, yearly, etc.)
--   Add, edit, and delete members
--   Form validation and success feedback messages
--   Smooth modal UI for editing members
--   Fully responsive interface
--   Uses Inertia.js for single-page application (SPA) behavior
+-   Full CRUD features
+-   Form validation
+-   Responsive UI
 
 ## Tech Stack
 
@@ -28,17 +24,24 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Database Schema
 
-Subscriptions Table
-Column Type Description
-id integer Primary key
-name string Subscription plan name
-duration_days integer Number of active days
-price decimal Cost of subscription
+### Subscriptions Table
 
-## Members Table
+| Column        | Type     | Description            |
+| ------------- | -------- | ---------------------- |
+| id            | integer  | Primary key            |
+| name          | string   | Subscription plan name |
+| duration_days | integer  | Number of active days  |
+| price         | decimal  | Cost of subscription   |
+| created_at    | datetime | Timestamp created      |
+| updated_at    | datetime | Timestamp updated      |
 
-Column Type Description
-id integer Primary key
-name string Member full name
-email string Member email (unique)
-subscription_id foreign key Links to subscriptions table
+### Members Table
+
+| Column          | Type        | Description                   |
+| --------------- | ----------- | ----------------------------- |
+| id              | integer     | Primary key                   |
+| name            | string      | Member full name              |
+| email           | string      | Member email (unique)         |
+| subscription_id | foreign key | References `subscriptions.id` |
+| created_at      | datetime    | Timestamp created             |
+| updated_at      | datetime    | Timestamp updated             |
