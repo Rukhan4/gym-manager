@@ -44,6 +44,22 @@ Gym Manager is a web application designed to manage gym members and their subscr
 | created_at      | datetime    | Timestamp created             |
 | updated_at      | datetime    | Timestamp updated             |
 
+### Reviews Table
+
+| Column      | Type        | Description                                      |
+|------------ |-------------|--------------------------------------------------|
+| id          | integer     | Primary key                                      |
+| member_id   | foreign key | References `members.id` (who wrote the review)   |
+| rating      | integer     | Star rating (1–5)                                |
+| comment     | text        | Written feedback from the member                 |
+| created_at  | datetime    | Timestamp created                                |
+| updated_at  | datetime    | Timestamp updated                                |
+
+#### Relationships
+
+- A **Member** can write **many Reviews**
+- A **Review** belongs to **one Member**
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
