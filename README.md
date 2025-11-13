@@ -4,10 +4,11 @@ Gym Manager is a web application designed to manage gym members and their subscr
 
 ## Features
 
--   Full CRUD features
--   Form validation
+-   Full CRUD functionality
+-   Form validation and profanity filtering
 -   Responsive UI
 -   Multiple linked webpages
+-   Status verification
   
 
 ## Tech Stack
