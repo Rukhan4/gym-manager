@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    // Return all members in Subscriptions page (Inertia loads this in controller, not here)
+    // Return all members in Subscriptions page
     public function list()
     {
         return Member::with('subscription')->get();

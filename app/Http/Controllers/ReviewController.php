@@ -23,7 +23,7 @@ class ReviewController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:10|max:1000',
+            'comment' => 'string',
         ]);
 
         Review::create($validated);
