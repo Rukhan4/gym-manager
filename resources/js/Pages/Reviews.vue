@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
-import { router, usePage, Link } from "@inertiajs/vue3";
+import { router, Link } from "@inertiajs/vue3";
+import { CheckCircleIcon } from "lucide-vue-next";
 
 const props = defineProps({
   reviews: Array,
@@ -16,42 +17,26 @@ const newReview = ref({
 const submitReview = () => {
   router.post("/reviews", newReview.value, {
     onSuccess: () => {
-      // Clear the form
-      newReview.value = {
-        name: "",
-        email: "",
-        rating: 5,
-        comment: "",
-      };
-      // Refresh the reviews list by visiting the reviews page so server props update
+      newReview.value = { name: "", email: "", rating: 5, comment: "" };
       router.get("/reviews");
     },
     onError: (errors) => {
-      // Log validation errors to the console for debugging
-      console.warn("Review submission validation errors:", errors);
-      // Show a simple alert so the user notices (temporary)
+      console.warn("Validation errors:", errors);
       if (errors && Object.keys(errors).length) {
         const first = Object.values(errors)[0];
         alert(Array.isArray(first) ? first.join("\n") : first);
       }
-    },
-    onFinish: (page) => {
-      console.info("Submission finished");
     },
   });
 };
 
 const deleteReview = (id) => {
   router.delete(`/reviews/${id}`, {
-    onSuccess: () => {
-      router.get("/reviews");
-      console.info(`Review with id ${id} deleted successfully.`);
-    },
+    onSuccess: () => router.get("/reviews"),
   });
 };
 
 const getRatingStars = (rating) => {
-  // Return an array of booleans: true = filled star, false = empty star
   return Array.from({ length: 5 }, (_, i) => i < rating);
 };
 </script>
@@ -61,11 +46,9 @@ const getRatingStars = (rating) => {
     class="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-base-100 to-primary/5">
     <!-- Header -->
     <header class="w-full bg-base-100/80 border-b border-base-300 shadow-sm backdrop-blur-sm">
-      <div class="container mx-auto py-6 px-4">
-        <div class="flex items-center justify-between">
-          <h1 class="text-4xl font-bold text-primary">Gym Reviews</h1>
-          <Link href="/subscriptions" class="btn btn-ghost cursor-pointer font-serif">← Back</Link>
-        </div>
+      <div class="container mx-auto py-6 px-4 flex justify-between items-center">
+        <h1 class="text-4xl font-bold text-primary">Gym Reviews</h1>
+        <Link href="/subscriptions" class="btn btn-ghost cursor-pointer font-serif">← Back</Link>
       </div>
     </header>
 
@@ -80,37 +63,34 @@ const getRatingStars = (rating) => {
           <form @submit.prevent="submitReview" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="form-control">
-                <label class="label">
-                  <span class="text-base font-semibold text-gray-700">Name</span>
-                </label>
+                <label class="label"
+                  ><span class="text-base font-semibold text-gray-700">Name</span></label
+                >
                 <input
                   v-model="newReview.name"
                   type="text"
-                  class="input w-full bg-sky-50/50 border-sky-200 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition-colors"
-                  placeholder="Your Name"
+                  class="input w-full bg-sky-50/50 border-sky-200 focus:ring-2 focus:ring-sky-200"
                   required />
               </div>
-
               <div class="form-control">
-                <label class="label">
-                  <span class="text-base font-semibold text-gray-700">Email</span>
-                </label>
+                <label class="label"
+                  ><span class="text-base font-semibold text-gray-700">Email</span></label
+                >
                 <input
                   v-model="newReview.email"
                   type="email"
-                  class="input w-full bg-sky-50/50 border-sky-200 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition-colors"
-                  placeholder="your@email.com"
+                  class="input w-full bg-sky-50/50 border-sky-200 focus:ring-2 focus:ring-sky-200"
                   required />
               </div>
             </div>
 
             <div class="form-control">
-              <label class="label">
-                <span class="text-base font-semibold text-gray-700">Rating</span>
-              </label>
+              <label class="label"
+                ><span class="text-base font-semibold text-gray-700">Rating</span></label
+              >
               <select
                 v-model.number="newReview.rating"
-                class="select w-full cursor-pointer bg-sky-50/50 border-sky-200 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition-colors">
+                class="select w-full cursor-pointer bg-sky-50/50 border-sky-200 focus:ring-2 focus:ring-sky-200">
                 <option :value="5">★★★★★ - Excellent</option>
                 <option :value="4">★★★★☆ - Very Good</option>
                 <option :value="3">★★★☆☆ - Good</option>
@@ -120,20 +100,19 @@ const getRatingStars = (rating) => {
             </div>
 
             <div class="form-control">
-              <label class="label">
-                <span class="text-base font-semibold text-gray-700">Comment</span>
-              </label>
+              <label class="label"
+                ><span class="text-base font-semibold text-gray-700">Comment</span></label
+              >
               <textarea
                 v-model="newReview.comment"
-                class="textarea w-full bg-sky-50/50 border-sky-200 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition-colors resize-none"
-                placeholder="Share your experience..."
+                class="textarea w-full bg-sky-50/50 border-sky-200 focus:ring-2 focus:ring-sky-200 resize-none"
                 rows="5"
                 required></textarea>
             </div>
 
             <button
               type="submit"
-              class="btn w-full bg-sky-500 hover:bg-sky-600 text-white border-sky-600 hover:border-sky-700 hover:scale-105 active:scale-100 transition-all py-3 text-lg font-semibold">
+              class="btn w-full bg-sky-500 hover:bg-sky-600 text-white border-sky-600 py-3 text-lg font-semibold">
               Submit Review
             </button>
           </form>
@@ -150,17 +129,27 @@ const getRatingStars = (rating) => {
               class="bg-base-100/95 backdrop-blur-sm p-6 rounded-2xl shadow-md border border-base-200 hover:shadow-lg transition-all">
               <div class="flex items-start justify-between mb-4">
                 <div>
-                  <h3 class="text-lg font-semibold text-gray-800">{{ review.name }}</h3>
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ review.name }}</h3>
+
+                    <!-- ✅ Verified Member Badge -->
+                    <span
+                      v-if="review.verified"
+                      class="flex items-center gap-1 text-green-600 text-sm font-medium">
+                      <CheckCircleIcon class="w-4 h-4" /> Verified Member
+                    </span>
+                  </div>
                   <p class="text-sm text-gray-500">{{ review.email }}</p>
                 </div>
+
                 <button
                   @click="deleteReview(review.id)"
-                  class="btn btn-sm bg-red-50 hover:bg-red-100 text-red-600 border-red-100 hover:border-red-200">
+                  class="btn btn-sm bg-red-50 hover:bg-red-100 text-red-600 border-red-100">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor">
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -179,7 +168,6 @@ const getRatingStars = (rating) => {
                     <path
                       d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.176 0l-3.38 2.455c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81H6.81a1 1 0 00.95-.69l1.29-3.967z" />
                   </svg>
-
                   <svg v-else class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.176 0l-3.38 2.455c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81H6.81a1 1 0 00.95-.69l1.29-3.967z" />
@@ -193,7 +181,7 @@ const getRatingStars = (rating) => {
 
           <div
             v-else
-            class="bg-base-100/95 backdrop-blur-sm p-8 rounded-2xl shadow-md border border-base-200 text-center">
+            class="bg-base-100/95 backdrop-blur-sm p-8 rounded-2xl shadow-md border text-center">
             <p class="text-gray-500 text-lg">No reviews yet. Be the first to leave one!</p>
           </div>
         </section>
@@ -202,10 +190,8 @@ const getRatingStars = (rating) => {
 
     <!-- Footer -->
     <footer class="w-full bg-base-100/80 border-t border-base-300 shadow-sm backdrop-blur-sm">
-      <div class="container mx-auto py-4 px-4">
-        <div class="text-center text-base-content/70">
-          <p>&copy; 2025 Gym Membership Manager. All rights reserved.</p>
-        </div>
+      <div class="container mx-auto py-4 px-4 text-center text-base-content/70">
+        <p>&copy; 2025 Gym Membership Manager. All rights reserved.</p>
       </div>
     </footer>
   </div>

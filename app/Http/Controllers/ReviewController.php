@@ -3,17 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
     public function index()
     {
-        $reviews = Review::latest()->get();
+        $reviews = Review::leftJoin('members', 'reviews.email', '=', 'members.email')
+        ->select('reviews.*', DB::raw('CASE WHEN members.id IS NOT NULL THEN true ELSE false END as verified'))
+        ->orderBy('reviews.created_at', 'desc')
+        ->get();
+
 
         return Inertia::render('Reviews', [
-            'reviews' => $reviews
+            'reviews' => $reviews,
         ]);
     }
 
