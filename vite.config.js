@@ -16,6 +16,6 @@ export default defineConfig({
       host: process.env.HMR_HOST || "localhost",
       port: 5173,
     },
-    watch: { usePolling: true },
+    watch: { usePolling: true, interval: 1000 },
   },
 });
