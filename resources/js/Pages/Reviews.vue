@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import { router, Link } from "@inertiajs/vue3";
 import { CheckCircleIcon } from "lucide-vue-next";
+import leoProfanity from "leo-profanity";
+
+leoProfanity.loadDictionary(); // load default bad words
 
 const props = defineProps({
   reviews: Array,
@@ -15,10 +18,15 @@ const newReview = ref({
 });
 
 const submitReview = () => {
+  if (leoProfanity.check(newReview.value.comment)) {
+    alert("Please remove inappropriate language from your comment.");
+    return;
+  }
+
   router.post("/reviews", newReview.value, {
     onSuccess: () => {
       newReview.value = { name: "", email: "", rating: 5, comment: "" };
-      router.get("/reviews");
+      router.get("/reviews"); // refresh reviews
     },
     onError: (errors) => {
       console.warn("Validation errors:", errors);

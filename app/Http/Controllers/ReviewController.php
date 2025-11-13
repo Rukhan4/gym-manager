@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Waad\ProfanityFilter\Facades\ProfanityFilter;
+use App\Models\Review;
 
 class ReviewController extends Controller
 {
@@ -25,16 +26,21 @@ class ReviewController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'string',
-        ]);
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string',
+    ]);
 
-        Review::create($validated);
+    // Check for profanity
+    if (ProfanityFilter::hasProfanity($validated['comment'])) {
+        return back()->withErrors(['comment' => 'Your comment contains inappropriate language.']);
+    }
 
-        return redirect('/reviews')->with('success', 'Review submitted successfully!');
+    Review::create($validated);
+
+    return redirect()->back()->with('success', 'Review added successfully!');
     }
 
     public function destroy($id)

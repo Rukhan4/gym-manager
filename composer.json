@@ -11,7 +11,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
-        "tightenco/ziggy": "^2.6"
+        "tightenco/ziggy": "^2.6",
+        "waad/laravel-profanity-filter": "^1.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
