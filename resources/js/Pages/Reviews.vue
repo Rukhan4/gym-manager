@@ -26,7 +26,7 @@ const submitReview = () => {
   router.post("/reviews", newReview.value, {
     onSuccess: () => {
       newReview.value = { name: "", email: "", rating: 5, comment: "" };
-      router.get("/reviews"); // refresh reviews
+      router.get("/reviews");
     },
     onError: (errors) => {
       console.warn("Validation errors:", errors);
@@ -140,7 +140,6 @@ const getRatingStars = (rating) => {
                   <div class="flex items-center gap-2">
                     <h3 class="text-lg font-semibold text-gray-800">{{ review.name }}</h3>
 
-                    <!-- ✅ Verified Member Badge -->
                     <span
                       v-if="review.verified"
                       class="flex items-center gap-1 text-green-600 text-sm font-medium">

@@ -7,8 +7,6 @@ const props = defineProps({
   members: Array,
 });
 
-// Remove pop ups
-
 const page = usePage();
 const showToast = ref(false);
 // Keep track of the timeout so repeated flashes don't stack
@@ -26,7 +24,6 @@ watchEffect(() => {
   }
 });
 
-// Add Member model
 const newMember = ref({
   name: "",
   email: "",
@@ -45,7 +42,6 @@ const addMember = () => {
   });
 };
 
-// Edit Member modal
 const showEditModal = ref(false);
 const editMember = ref({});
 
@@ -60,12 +56,9 @@ const updateMember = () => {
   });
 };
 
-// Delete Member
 const deleteMember = (id) => {
   router.delete(`/members/${id}`);
 };
-
-// Animate modal pop up
 </script>
 
 <template>
