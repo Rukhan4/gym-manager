@@ -26,12 +26,14 @@ watchEffect(() => {
   }
 });
 
+// Initialize member
 const newMember = ref({
   name: "",
   email: "",
   subscription_id: "",
 });
 
+// Add new Member
 const addMember = () => {
   router.post("/members", newMember.value, {
     onSuccess: () => {
@@ -57,6 +59,7 @@ const addMember = () => {
 const showEditModal = ref(false);
 const editMember = ref({});
 
+// Submit to admin page
 const updateMember = () => {
   router.put(`/members/${editMember.value.id}`, editMember.value, {
     onSuccess: () => (showEditModal.value = false),

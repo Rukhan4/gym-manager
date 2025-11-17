@@ -45,7 +45,7 @@ const getRatingStars = (rating) => {
 
 <template>
   <div
-    class="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-base-100 to-primary/5">
+    class="min-h-screen w-full flex flex-col bg-gradient-to-br from-emerald-700 via-slate-950 to-cyan-700 text-white">
     <!-- Header -->
     <header class="w-full bg-base-100/80 border-b border-base-300 shadow-sm backdrop-blur-sm">
       <div class="container mx-auto py-6 px-4 flex justify-between items-center">
@@ -66,7 +66,7 @@ const getRatingStars = (rating) => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="form-control">
                 <label class="label"
-                  ><span class="text-base font-semibold text-gray-700">Name</span></label
+                  ><span class="text-base font-semibold text-white">Name</span></label
                 >
                 <input
                   v-model="newReview.name"
@@ -76,7 +76,7 @@ const getRatingStars = (rating) => {
               </div>
               <div class="form-control">
                 <label class="label"
-                  ><span class="text-base font-semibold text-gray-700">Email</span></label
+                  ><span class="text-base font-semibold text-white">Email</span></label
                 >
                 <input
                   v-model="newReview.email"
@@ -88,7 +88,7 @@ const getRatingStars = (rating) => {
 
             <div class="form-control">
               <label class="label"
-                ><span class="text-base font-semibold text-gray-700">Rating</span></label
+                ><span class="text-base font-semibold text-white">Rating</span></label
               >
               <select
                 v-model.number="newReview.rating"
@@ -103,7 +103,7 @@ const getRatingStars = (rating) => {
 
             <div class="form-control">
               <label class="label"
-                ><span class="text-base font-semibold text-gray-700">Comment</span></label
+                ><span class="text-base font-semibold text-white">Comment</span></label
               >
               <textarea
                 v-model="newReview.comment"
@@ -132,7 +132,7 @@ const getRatingStars = (rating) => {
               <div class="flex items-start justify-between mb-4">
                 <div>
                   <div class="flex items-center gap-2">
-                    <h3 class="text-lg font-semibold text-gray-800">{{ review.name }}</h3>
+                    <h3 class="text-lg font-semibold text-white-800">{{ review.name }}</h3>
 
                     <span
                       v-if="review.verified"
@@ -140,7 +140,7 @@ const getRatingStars = (rating) => {
                       <CheckCircleIcon class="w-4 h-4" /> Verified Member
                     </span>
                   </div>
-                  <p class="text-sm text-gray-500">{{ review.email }}</p>
+                  <p class="text-sm text-white">{{ review.email }}</p>
                 </div>
               </div>
 
@@ -154,21 +154,25 @@ const getRatingStars = (rating) => {
                     <path
                       d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.176 0l-3.38 2.455c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81H6.81a1 1 0 00.95-.69l1.29-3.967z" />
                   </svg>
-                  <svg v-else class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    v-else
+                    class="w-6 h-6 text-white-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
                     <path
                       d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.176 0l-3.38 2.455c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81H6.81a1 1 0 00.95-.69l1.29-3.967z" />
                   </svg>
                 </template>
               </div>
 
-              <p class="text-gray-700">{{ review.comment }}</p>
+              <p class="text-white">{{ review.comment }}</p>
             </div>
           </div>
 
           <div
             v-else
             class="bg-base-100/95 backdrop-blur-sm p-8 rounded-2xl shadow-md border text-center">
-            <p class="text-gray-500 text-lg">No reviews yet. Be the first to leave one!</p>
+            <p class="text-white text-lg">No reviews yet. Be the first to leave one!</p>
           </div>
         </section>
       </div>
