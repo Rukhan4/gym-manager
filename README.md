@@ -9,6 +9,7 @@ Gym Manager is a web application designed to manage gym members and their subscr
 -   Responsive UI
 -   Multiple linked webpages
 -   Status verification
+-   Admin/User RBAC Controls
   
 
 ## Tech Stack
@@ -21,45 +22,6 @@ Gym Manager is a web application designed to manage gym members and their subscr
 | Database      | MySQL                        |
 | Containerized | Laravel Sail (Docker)        |
 
-## Database Schema
-
-### Subscriptions Table
-
-| Column        | Type     | Description            |
-| ------------- | -------- | ---------------------- |
-| id            | integer  | Primary key            |
-| name          | string   | Subscription plan name |
-| duration_days | integer  | Number of active days  |
-| price         | decimal  | Cost of subscription   |
-| created_at    | datetime | Timestamp created      |
-| updated_at    | datetime | Timestamp updated      |
-
-### Members Table
-
-| Column          | Type        | Description                   |
-| --------------- | ----------- | ----------------------------- |
-| id              | integer     | Primary key                   |
-| name            | string      | Member full name              |
-| email           | string      | Member email (unique)         |
-| subscription_id | foreign key | References `subscriptions.id` |
-| created_at      | datetime    | Timestamp created             |
-| updated_at      | datetime    | Timestamp updated             |
-
-### Reviews Table
-
-| Column      | Type        | Description                                      |
-|------------ |-------------|--------------------------------------------------|
-| id          | integer     | Primary key                                      |
-| member_id   | foreign key | References `members.id` (who wrote the review)   |
-| rating      | integer     | Star rating (1–5)                                |
-| comment     | text        | Written feedback from the member                 |
-| created_at  | datetime    | Timestamp created                                |
-| updated_at  | datetime    | Timestamp updated                                |
-
-#### Relationships
-
-- A **Member** can write **many Reviews**
-- A **Review** belongs to **one Member**
 
 ## License
 
