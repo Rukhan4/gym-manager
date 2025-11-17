@@ -9,7 +9,6 @@ const props = defineProps({
 
 const page = usePage();
 const showToast = ref(false);
-// Keep track of the timeout so repeated flashes don't stack
 let toastTimeout = null;
 
 watchEffect(() => {
@@ -20,7 +19,7 @@ watchEffect(() => {
     toastTimeout = setTimeout(() => {
       showToast.value = false;
       toastTimeout = null;
-    }, 3000); // hide after 3s
+    }, 3000);
   }
 });
 
@@ -63,280 +62,654 @@ const deleteMember = (id) => {
 
 <template>
   <div
-    class="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-base-100 to-primary/5 font-serif">
-    <!-- Header -->
-    <header class="w-full bg-base-100/80 border-b border-base-300 shadow-sm backdrop-blur-sm">
-      <div class="container mx-auto py-6 px-4">
-        <h1 class="text-4xl font-serif text-center text-primary">Gym Membership Manager</h1>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <div class="flex-1 container mx-auto p-6 md:p-10">
-      <div
-        class="w-full max-w-4xl mx-auto space-y-12 bg-base-100/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-base-200">
-        <!-- Subscription Plans -->
-        <section>
-          <h2 class="text-2xl font-semibold mb-4 text-center">Subscription Plans</h2>
-
-          <div class="flex justify-center">
-            <table
-              class="table table-zebra table-auto border bg-base-100 rounded-xl shadow text-center">
-              <thead class="bg-base-200">
-                <tr>
-                  <th class="px-6 py-3">Name</th>
-                  <th class="px-6 py-3">Days</th>
-                  <th class="px-6 py-3">Price ($)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="s in props.subscriptions"
-                  :key="s.id"
-                  class="hover:bg-base-300 transition">
-                  <td class="px-6 py-3">
-                    {{ s.name }}
-                  </td>
-                  <td class="px-6 py-3">
-                    {{ s.duration_days }}
-                  </td>
-                  <td class="px-6 py-3">
-                    {{ s.price }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+    class="min-h-screen w-full flex flex-col bg-gradient-to-br from-emerald-700 via-slate-950 to-cyan-700 text-white">
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 right-0 z-40 bg-transparent backdrop-blur-lg border-b border-slate-800/30">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <svg
+              class="w-10 h-10 text-emerald-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span class="text-2xl font-bold text-white">MOE GYMS</span>
           </div>
-        </section>
+          <div class="hidden md:flex items-center gap-8">
+            <a
+              href="#home"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Home</a
+            >
+            <a
+              href="#features"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Features</a
+            >
+            <a
+              href="#plans"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Plans</a
+            >
+            <a
+              href="#facility"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Facility</a
+            >
+            <a
+              href="#join"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Join Now</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
 
-        <!-- Add Member Form -->
-        <section>
-          <h2 class="text-2xl font-semibold mb-4" id="center-text">Add Member</h2>
-          <div class="card bg-base-100 shadow p-6 space-y-4">
-            <input
-              v-model="newMember.name"
-              class="input input-bordered w-full"
-              placeholder="Full Name" />
-            <input
-              v-model="newMember.email"
-              class="input input-bordered w-full"
-              placeholder="Email Address" />
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <!-- Background -->
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-emerald-600/20 via-slate-950 to-cyan-600/20"></div>
+      <div
+        class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50"></div>
 
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="text-6xl md:text-8xl font-black text-white mb-6 leading-tight">
+            WELCOME TO<br />
+            <span
+              class="bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent bg-clip-text"
+              >MOE GYMS</span
+            >
+          </h1>
+          <p class="text-2xl md:text-3xl text-slate-300 font-light mb-4">
+            GET THE BODY YOU WANT AT THE GYM YOU LOVE
+          </p>
+          <p class="text-lg text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+            Come and experience an Ultra Modern, State of the Art Gym Facility with three levels
+            that caters to all your fitness needs. Whatever type of fitness workout you are looking
+            for we got it. We are open 24/7 and welcome persons of all ages, gender and fitness
+            level.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="#join"
+              class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/50 transform hover:scale-105 transition-all text-lg">
+              Join Now
+            </a>
+            <a
+              href="#plans"
+              class="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border-2 border-slate-700 hover:border-emerald-500 transform hover:scale-105 transition-all text-lg">
+              View Plans
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-slate-900/50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Why Choose MOE Gyms</h2>
+          <p class="text-xl text-slate-400">Everything you need for your fitness journey</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <!-- Feature 1 -->
+          <div class="relative group">
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+            <div
+              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3">MODERN EQUIPMENT</h3>
+              <p class="text-lg text-emerald-400 font-semibold mb-3">Gym Technology at its Best</p>
+              <p class="text-slate-400 leading-relaxed">
+                We have outfitted our facility with world-class machines and training equipment.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="relative group">
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+            <div
+              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3">CERTIFIED TRAINERS</h3>
+              <p class="text-lg text-emerald-400 font-semibold mb-3">Who keep you motivated</p>
+              <p class="text-slate-400 leading-relaxed">
+                Dedicated and experienced trainers who love working with our members to see them
+                achieve their fitness goals.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="relative group">
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+            <div
+              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3">AFFORDABLE PRICES</h3>
+              <p class="text-lg text-emerald-400 font-semibold mb-3">So you don't miss out</p>
+              <p class="text-slate-400 leading-relaxed">
+                We have made it easy for you to join as a member. Check out our membership fees and
+                special packages.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Facility Section -->
+    <section id="facility" class="py-24 bg-slate-950">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">OUR FACILITY</h2>
+          <p class="text-xl text-emerald-400 font-semibold mb-4">
+            3 LEVELS OF TRAINING SPACE AT OUR POS BRANCH
+          </p>
+          <p class="text-lg text-slate-400 max-w-3xl mx-auto">
+            Our members enjoy a facility that is designed to cater to their comfort and fitness
+            goals while we maintain international standards.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
+            <div class="text-4xl mb-4"></div>
+            <h3 class="text-xl font-bold text-white mb-2">Weight Training</h3>
+            <p class="text-slate-400">State-of-the-art weight equipment</p>
+          </div>
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
+            <div class="text-4xl mb-4"></div>
+            <h3 class="text-xl font-bold text-white mb-2">Cardio Zone</h3>
+            <p class="text-slate-400">Premium cardio machines</p>
+          </div>
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
+            <div class="text-4xl mb-4"></div>
+            <h3 class="text-xl font-bold text-white mb-2">Yoga Studio</h3>
+            <p class="text-slate-400">Peaceful practice space</p>
+          </div>
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
+            <div class="text-4xl mb-4"></div>
+            <h3 class="text-xl font-bold text-white mb-2">Combat Zone</h3>
+            <p class="text-slate-400">Boxing & martial arts area</p>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center">
+          <div
+            class="inline-flex items-center gap-3 px-6 py-3 bg-emerald-500/20 border border-emerald-500/30 rounded-full">
+            <svg
+              class="w-5 h-5 text-emerald-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-emerald-400 font-bold text-lg">OPEN 24/7</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Membership Plans -->
+    <section id="plans" class="py-24 bg-slate-900/50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Membership Plans</h2>
+          <p class="text-xl text-slate-400">Choose the perfect plan for your fitness journey</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div v-for="s in props.subscriptions" :key="s.id" class="group relative">
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+            <div
+              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 hover:border-emerald-500 rounded-2xl p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/20 h-full flex flex-col">
+              <div class="text-center flex-1">
+                <h3 class="text-2xl font-bold text-white mb-4">{{ s.name }}</h3>
+                <div class="my-8">
+                  <span class="text-6xl font-bold text-emerald-400">${{ s.price }}</span>
+                </div>
+                <div
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700/50 rounded-full mb-6">
+                  <svg
+                    class="w-5 h-5 text-emerald-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-slate-300 font-medium">{{ s.duration_days }} Days Access</span>
+                </div>
+              </div>
+              <div class="mt-6">
+                <a
+                  href="#join"
+                  class="block w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold rounded-xl text-center transition-all transform hover:scale-105">
+                  Select Plan
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Join Section -->
+    <section id="join" class="py-24 bg-slate-950">
+      <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Join MOE Gyms Today</h2>
+            <p class="text-xl text-slate-400">Start your fitness journey with us</p>
+          </div>
+
+          <!-- Add Member Form -->
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 md:p-12 border border-slate-700 shadow-2xl">
+            <div class="text-center mb-8">
+              <div
+                class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl mb-6">
+                <svg
+                  class="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+              </div>
+              <h3 class="text-3xl font-bold text-white mb-2">Register Now</h3>
+              <p class="text-slate-400 text-lg">Fill out the form below to become a member</p>
+            </div>
+
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-3">Full Name</label>
+                <input
+                  v-model="newMember.name"
+                  class="w-full px-5 py-4 bg-slate-700/50 border border-slate-600 rounded-xl text-white text-lg placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  placeholder="Enter your full name" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-3">Email Address</label>
+                <input
+                  v-model="newMember.email"
+                  type="email"
+                  class="w-full px-5 py-4 bg-slate-700/50 border border-slate-600 rounded-xl text-white text-lg placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  placeholder="your.email@example.com" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-3"
+                  >Select Your Plan</label
+                >
+                <select
+                  v-model="newMember.subscription_id"
+                  class="w-full px-5 py-4 bg-slate-700/50 border border-slate-600 rounded-xl text-white text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all cursor-pointer">
+                  <option disabled value="" class="bg-slate-800">
+                    Choose your membership plan
+                  </option>
+                  <option
+                    v-for="s in props.subscriptions"
+                    :value="s.id"
+                    :key="s.id"
+                    class="bg-slate-800">
+                    {{ s.name }} - ${{ s.price }} ({{ s.duration_days }} days)
+                  </option>
+                </select>
+              </div>
+
+              <button
+                @click="addMember"
+                type="button"
+                class="w-full py-5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-emerald-500/50 transform hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                Complete Registration
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Members Management (Admin Section) -->
+    <section class="py-24 bg-slate-900/50">
+      <div class="container mx-auto px-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-white mb-4">Member Management</h2>
+            <p class="text-xl text-slate-400">View and manage all gym members</p>
+          </div>
+
+          <div
+            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gradient-to-r from-emerald-600 to-cyan-600">
+                    <th
+                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
+                      Member
+                    </th>
+                    <th
+                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th
+                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
+                      Plan
+                    </th>
+                    <th
+                      class="px-6 py-5 text-center text-sm font-bold text-white uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                  <tr
+                    v-for="m in props.members"
+                    :key="m.id"
+                    class="hover:bg-slate-700/50 transition-colors">
+                    <td class="px-6 py-5">
+                      <div class="flex items-center gap-4">
+                        <div
+                          class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span class="text-white font-bold text-lg">{{
+                            m.name.charAt(0).toUpperCase()
+                          }}</span>
+                        </div>
+                        <span class="text-white font-semibold text-lg">{{ m.name }}</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-5 text-slate-300 text-lg">{{ m.email }}</td>
+                    <td class="px-6 py-5">
+                      <span
+                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        {{ props.subscriptions.find((s) => s.id === m.subscription_id)?.name }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-5">
+                      <div class="flex items-center justify-center gap-3">
+                        <button
+                          @click="openEditModal(m)"
+                          class="p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg border border-blue-500/30 hover:border-blue-400 transition-all transform hover:scale-110">
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          @click="deleteMember(m.id)"
+                          class="p-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg border border-red-500/30 hover:border-red-400 transition-all transform hover:scale-110">
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review CTA -->
+    <div class="text-center mt-16">
+      <Link
+        href="/reviews"
+        class="inline-flex items-center gap-3 px-8 py-4 mb-5 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-black font-bold rounded-xl shadow-lg hover:shadow-yellow-400/50 transform hover:scale-105 active:scale-95 transition-all duration-200">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        </svg>
+        Leave a Review
+      </Link>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="w-full max-w-7xl mx-auto px-6 py-8">
+        <div class="text-center">
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <svg
+              class="w-6 h-6 text-emerald-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span class="text-xl font-bold text-white">FitTrack Pro</span>
+          </div>
+          <p class="text-slate-300 text-sm">&copy; 2025 FitTrack Pro. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Edit Modal -->
+  <transition
+    enter-active-class="transition ease-out duration-300"
+    enter-from-class="opacity-0"
+    enter-to-class="opacity-100"
+    leave-active-class="transition ease-in duration-200"
+    leave-from-class="opacity-100"
+    leave-to-class="opacity-0">
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      @click.self="showEditModal = false">
+      <div
+        class="w-full max-w-lg bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-2xl transform transition-all">
+        <div class="p-6 border-b border-slate-700">
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-white">Edit Member</h3>
+            <button
+              @click="showEditModal = false"
+              class="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Full Name</label>
+            <input
+              v-model="editMember.name"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Email Address</label>
+            <input
+              v-model="editMember.email"
+              type="email"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Subscription Plan</label>
             <select
-              v-model="newMember.subscription_id"
-              class="select select-bordered w-full cursor-pointer">
-              <option disabled value="">Select Subscription</option>
-              <option v-for="s in props.subscriptions" :value="s.id" :key="s.id">
+              v-model="editMember.subscription_id"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer">
+              <option disabled value="" class="bg-slate-800">Choose a plan</option>
+              <option
+                v-for="s in props.subscriptions"
+                :value="s.id"
+                :key="s.id"
+                class="bg-slate-800">
                 {{ s.name }}
               </option>
             </select>
-
-            <button
-              class="btn btn-primary w-full btn-lg font-semibold hover:scale-105 active:scale-95 transition border-2 border-primary-700 rounded-xl"
-              @click="addMember"
-              type="button">
-              Add
-            </button>
-          </div>
-        </section>
-
-        <!-- Members List -->
-        <section>
-          <h2 class="text-2xl font-semibold mb-6 text-center">Members</h2>
-
-          <div class="overflow-x-auto flex justify-center">
-            <table class="table-auto w-full max-w-4xl bg-base-100 rounded-xl shadow-lg">
-              <thead>
-                <tr class="bg-primary text-primary-content text-lg">
-                  <th class="p-3 text-center">Name</th>
-                  <th class="p-3 text-center">Email</th>
-                  <th class="p-3 text-center">Subscription</th>
-                  <th class="p-3 text-center">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr v-for="m in props.members" :key="m.id" class="hover:bg-base-200 transition">
-                  <td class="py-3 text-center font-medium">
-                    {{ m.name }}
-                  </td>
-                  <td class="py-3 text-center">
-                    {{ m.email }}
-                  </td>
-                  <td class="py-3 text-center font-semibold">
-                    {{ props.subscriptions.find((s) => s.id === m.subscription_id)?.name }}
-                  </td>
-                  <td class="py-3 text-center">
-                    <div class="flex items-center justify-center gap-2">
-                      <button
-                        class="btn btn-sm hover:bg-sky-200 text-sky-700 border-sky-200 hover:border-sky-300 gap-1"
-                        @click="openEditModal(m)">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          viewBox="0 0 20 20"
-                          fill="currentColor">
-                          <path
-                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
-                        <span class="hidden sm:inline">Edit</span>
-                      </button>
-                      <button
-                        class="btn btn-sm hover:bg-red-100 text-red-600 border-red-100 hover:border-red-200 gap-1"
-                        @click="deleteMember(m.id)">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          viewBox="0 0 20 20"
-                          fill="currentColor">
-                          <path
-                            fill-rule="evenodd"
-                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                            clip-rule="evenodd" />
-                        </svg>
-                        <span class="hidden sm:inline">Delete</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-    </div>
-
-    <!-- Modal pop up for edit -->
-    <transition
-      enter-active-class="transition ease-out duration-200"
-      enter-from-class="opacity-0 translate-y-3 scale-95"
-      enter-to-class="opacity-100 translate-y-0 scale-100"
-      leave-active-class="transition ease-in duration-150"
-      leave-from-class="opacity-100 translate-y-0 scale-100"
-      leave-to-class="opacity-0 translate-y-3 scale-95">
-      <div
-        v-if="showEditModal"
-        class="fixed inset-0 z-50 grid place-items-center"
-        @click.self="showEditModal = false"
-        role="dialog"
-        aria-modal="true">
-        <div
-          class="w-full max-w-lg bg-white shadow-2xl border border-sky-100 overflow-hidden rounded-2xl transform transition-all duration-200 ease-out hover:scale-[1.01]">
-          <!-- Header -->
-          <div
-            class="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-sky-50 to-white border-b border-sky-100">
-            <h3 class="text-xl font-bold text-sky-900">Edit Member Details</h3>
-            <button
-              class="btn btn-circle btn-sm bg-sky-50 hover:bg-sky-100 border-sky-100 hover:border-sky-200 text-sky-600 hover:rotate-90 transition-all"
-              aria-label="Close"
-              @click="showEditModal = false">
-              ✕
-            </button>
           </div>
 
-          <!-- Body -->
-          <form class="px-8 py-6 space-y-6" @submit.prevent="updateMember">
-            <div class="form-control">
-              <label class="label">
-                <span class="text-base font-semibold text-gray-700">Full Name</span>
-              </label>
-              <input
-                v-model="editMember.name"
-                class="input w-full bg-sky-50/50 border-sky-200 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition-colors"
-                placeholder="John Doe"
-                required />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text text-base font-semibold">Email</span>
-              </label>
-              <input
-                v-model="editMember.email"
-                type="email"
-                class="input input-bordered w-full bg-base-200/50 hover:bg-base-200 focus:bg-base-100 transition-colors"
-                placeholder="email@example.com"
-                required />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text text-base font-semibold">Subscription Plan</span>
-              </label>
-              <select
-                v-model="editMember.subscription_id"
-                class="select select-bordered w-full bg-base-200/50 hover:bg-base-200 focus:bg-base-100 transition-colors">
-                <option disabled value="">Choose a plan</option>
-                <option v-for="s in props.subscriptions" :value="s.id" :key="s.id" class="py-2">
-                  {{ s.name }}
-                </option>
-              </select>
-            </div>
-          </form>
-
-          <!-- Actions for member table -->
-          <div
-            class="flex items-center justify-end gap-4 px-8 py-5 bg-gradient-to-r from-sky-50 to-white border-t border-sky-100">
+          <div class="flex gap-3 pt-4">
             <button
               type="button"
-              class="btn bg-white hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300"
-              @click="showEditModal = false">
+              @click="showEditModal = false"
+              class="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-all">
               Cancel
             </button>
             <button
-              type="submit"
-              class="btn bg-sky-500 border-2 rounded-lg text-white hover:border-sky-700 hover:scale-105 active:scale-100 transition-all"
-              @click="updateMember">
+              type="button"
+              @click="updateMember"
+              class="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-emerald-500/50 transition-all">
               Save Changes
             </button>
           </div>
         </div>
       </div>
-    </transition>
-  </div>
-
-  <!-- Leave Review Button -->
-  <div class="flex justify-center mt-10 mb-10">
-    <Link
-      href="/reviews"
-      class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-yellow-500">
-      Leave Review
-    </Link>
-  </div>
-
-  <!-- Footer -->
-  <footer class="w-full bg-base-100/80 border-t border-base-300 shadow-sm backdrop-blur-sm">
-    <div class="container mx-auto py-4 px-4">
-      <div class="text-center text-base-content/70">
-        <p>&copy; 2025 Gym Membership Manager. All rights reserved.</p>
-      </div>
     </div>
-  </footer>
+  </transition>
 
-  <!-- Console Toast Notification for add, edit, delete -->
+  <!-- Toast Notification -->
   <transition
     enter-active-class="transition transform ease-out duration-300"
-    enter-from-class="opacity-0 -translate-y-3 scale-95"
-    enter-to-class="opacity-100 translate-y-0 scale-100"
+    enter-from-class="opacity-0 translate-x-8"
+    enter-to-class="opacity-100 translate-x-0"
     leave-active-class="transition transform ease-in duration-200"
-    leave-from-class="opacity-100 translate-y-0 scale-100"
-    leave-to-class="opacity-0 translate-y-2 scale-95">
-    <div v-if="showToast" class="fixed top-4 right-4 z-50">
-      <div class="max-w-sm w-full">
-        <div
-          class="alert alert-success shadow-lg bg-success/95 text-success-content backdrop-blur-sm border border-success/20 flex items-start gap-4">
-          <div class="flex-1">
-            <div class="font-semibold">Success</div>
-            <div class="text-sm">{{ page.props.flash.success }}</div>
-          </div>
-          <button
-            type="button"
-            class="btn btn-ghost btn-sm"
-            aria-label="Close notification"
-            @click="showToast = false">
-            ✕
-          </button>
+    leave-from-class="opacity-100 translate-x-0"
+    leave-to-class="opacity-0 translate-x-8">
+    <div v-if="showToast" class="fixed top-6 right-6 z-50">
+      <div
+        class="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-4 rounded-xl shadow-2xl border border-emerald-400/30 flex items-center gap-4 max-w-md">
+        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="flex-1">
+          <div class="font-bold">Success!</div>
+          <div class="text-sm text-white/90">{{ page.props.flash.success }}</div>
         </div>
+        <button
+          @click="showToast = false"
+          class="p-1 hover:bg-white/20 rounded-lg transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
   </transition>

@@ -4,14 +4,14 @@
 
 .toast-console {
   position: fixed;
-  top: 20px;             /* Change to bottom: 20px for bottom-right */
+  top: 20px; /* Change to bottom: 20px for bottom-right */
   right: 20px;
   z-index: 9999;
-  background: #1f2937;   /* dark gray */
+  background: #1f2937; /* dark gray */
   color: white;
   padding: 12px 18px;
   border-radius: 6px;
-  box-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);
   font-size: 14px;
   opacity: 0;
   transform: translateX(30px);
@@ -23,15 +23,14 @@
   transform: translateX(0);
 }
 
+/* Reset body to avoid centering the entire app and causing white margins */
 body {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    height: 100%;
+  margin: 0;
+  min-height: 100vh;
 }
 
 #center-text {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

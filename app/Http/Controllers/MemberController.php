@@ -39,7 +39,7 @@ class MemberController extends Controller
 
         $member->update($request->all());
 
-        // ✅ Must return redirect
+       
         return redirect()->back()->with('success', 'Member updated successfully!');
     }
 
@@ -48,7 +48,7 @@ class MemberController extends Controller
     {
         $member->delete();
 
-        // ✅ Must return redirect
+      
         return redirect()->back()->with('success', 'Member deleted successfully!');
     }
 }
