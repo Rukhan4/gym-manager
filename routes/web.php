@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return redirect('/subscriptions');
@@ -24,3 +25,8 @@ Route::delete('/members/{member}', [MemberController::class, 'destroy']);
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+// Admin
+Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');

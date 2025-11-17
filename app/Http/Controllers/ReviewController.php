@@ -43,8 +43,12 @@ class ReviewController extends Controller
     return redirect()->back()->with('success', 'Review added successfully!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if (! $request->session()->get('is_admin')) {
+            abort(403);
+        }
+
         Review::findOrFail($id)->delete();
         return redirect('/reviews')->with('success', 'Review deleted successfully!');
     }

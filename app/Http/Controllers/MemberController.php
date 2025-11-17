@@ -44,11 +44,14 @@ class MemberController extends Controller
     }
 
     // Delete a member
-    public function destroy(Member $member)
+    public function destroy(Request $request, Member $member)
     {
+        if (! $request->session()->get('is_admin')) {
+            abort(403);
+        }
+
         $member->delete();
 
-      
         return redirect()->back()->with('success', 'Member deleted successfully!');
     }
 }

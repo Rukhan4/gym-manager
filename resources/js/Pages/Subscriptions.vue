@@ -10,15 +10,18 @@ const props = defineProps({
 const page = usePage();
 const showToast = ref(false);
 let toastTimeout = null;
+const toastMessage = ref("");
 
 watchEffect(() => {
   const message = page.props?.flash?.success;
   if (message) {
+    toastMessage.value = message;
     showToast.value = true;
     if (toastTimeout) clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
       showToast.value = false;
       toastTimeout = null;
+      toastMessage.value = "";
     }, 3000);
   }
 });
@@ -37,6 +40,16 @@ const addMember = () => {
         email: "",
         subscription_id: "",
       };
+      // show immediate client-side toast with instruction
+      toastMessage.value =
+        "Member added! Please visit our branch to complete payment and registration.";
+      showToast.value = true;
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        showToast.value = false;
+        toastTimeout = null;
+        toastMessage.value = "";
+      }, 5000);
     },
   });
 };
@@ -44,19 +57,10 @@ const addMember = () => {
 const showEditModal = ref(false);
 const editMember = ref({});
 
-const openEditModal = (member) => {
-  editMember.value = { ...member };
-  showEditModal.value = true;
-};
-
 const updateMember = () => {
   router.put(`/members/${editMember.value.id}`, editMember.value, {
     onSuccess: () => (showEditModal.value = false),
   });
-};
-
-const deleteMember = (id) => {
-  router.delete(`/members/${id}`);
 };
 </script>
 
@@ -107,6 +111,11 @@ const deleteMember = (id) => {
               href="#join"
               class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
               >Join Now</a
+            >
+            <Link
+              href="/admin"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Admin</Link
             >
           </div>
         </div>
@@ -456,105 +465,6 @@ const deleteMember = (id) => {
       </div>
     </section>
 
-    <!-- Members Management (Admin Section) -->
-    <section class="py-24 bg-slate-900/50">
-      <div class="container mx-auto px-6">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-white mb-4">Member Management</h2>
-            <p class="text-xl text-slate-400">View and manage all gym members</p>
-          </div>
-
-          <div
-            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead>
-                  <tr class="bg-gradient-to-r from-emerald-600 to-cyan-600">
-                    <th
-                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
-                      Member
-                    </th>
-                    <th
-                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th
-                      class="px-6 py-5 text-left text-sm font-bold text-white uppercase tracking-wider">
-                      Plan
-                    </th>
-                    <th
-                      class="px-6 py-5 text-center text-sm font-bold text-white uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-700">
-                  <tr
-                    v-for="m in props.members"
-                    :key="m.id"
-                    class="hover:bg-slate-700/50 transition-colors">
-                    <td class="px-6 py-5">
-                      <div class="flex items-center gap-4">
-                        <div
-                          class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span class="text-white font-bold text-lg">{{
-                            m.name.charAt(0).toUpperCase()
-                          }}</span>
-                        </div>
-                        <span class="text-white font-semibold text-lg">{{ m.name }}</span>
-                      </div>
-                    </td>
-                    <td class="px-6 py-5 text-slate-300 text-lg">{{ m.email }}</td>
-                    <td class="px-6 py-5">
-                      <span
-                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        {{ props.subscriptions.find((s) => s.id === m.subscription_id)?.name }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-5">
-                      <div class="flex items-center justify-center gap-3">
-                        <button
-                          @click="openEditModal(m)"
-                          class="p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg border border-blue-500/30 hover:border-blue-400 transition-all transform hover:scale-110">
-                          <svg
-                            class="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                        </button>
-                        <button
-                          @click="deleteMember(m.id)"
-                          class="p-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg border border-red-500/30 hover:border-red-400 transition-all transform hover:scale-110">
-                          <svg
-                            class="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Review CTA -->
     <div class="text-center mt-16">
       <Link
@@ -697,7 +607,7 @@ const deleteMember = (id) => {
         </svg>
         <div class="flex-1">
           <div class="font-bold">Success!</div>
-          <div class="text-sm text-white/90">{{ page.props.flash.success }}</div>
+          <div class="text-sm text-white/90">{{ toastMessage }}</div>
         </div>
         <button
           @click="showToast = false"
