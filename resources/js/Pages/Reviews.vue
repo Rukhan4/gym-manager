@@ -114,7 +114,7 @@ const getRatingStars = (rating) => {
 
             <button
               type="submit"
-              class="btn w-full bg-sky-500 hover:bg-sky-600 text-white border-sky-600 py-3 text-lg font-semibold">
+              class="btn w-full py-5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-emerald-500/50 transform hover:scale-[1.02] active:scale-95 transition-all duration-200">
               Submit Review
             </button>
           </form>
