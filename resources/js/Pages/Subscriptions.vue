@@ -500,9 +500,11 @@ const updateMember = () => {
                 stroke-width="2"
                 d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span class="text-xl font-bold text-white">FitTrack Pro</span>
+            <span class="text-xl font-bold text-white">Developed by Surur Khan</span>
           </div>
-          <p class="text-slate-300 text-sm">&copy; 2025 FitTrack Pro. All rights reserved.</p>
+          <p class="text-slate-300 text-sm">
+            &copy; 2025 Gym Membership Manager. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
