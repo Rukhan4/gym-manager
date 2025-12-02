@@ -9,7 +9,7 @@ Gym Manager is a web application designed to manage gym members and their subscr
 -   Responsive UI
 -   Multiple linked webpages
 -   Status verification
--   Admin/User RBAC Controls
+-   Admin/User RBAC 
 
   ## Privilege 
   - Admin -> Delete Reviews, Edit member information, Delete member
