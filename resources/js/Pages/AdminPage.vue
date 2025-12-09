@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { router, Link } from "@inertiajs/vue3";
+import { ref, watchEffect } from "vue";
+import { router, Link, usePage } from "@inertiajs/vue3";
 
 const props = defineProps({ members: Array, reviews: Array, requiresAuth: Boolean });
 
@@ -11,15 +11,20 @@ const requiresAuth = props.requiresAuth ?? false;
 // Login form
 const loginForm = ref({ username: "", password: "" });
 const loginError = ref("");
+const page = usePage();
+
+// show server flash error (e.g. invalid credentials) in the login form
+watchEffect(() => {
+  const err = page.props?.flash?.error;
+  loginError.value = err || "";
+});
 
 const login = () => {
   router.post("/admin/login", loginForm.value, {
-    onSuccess: () => {
-      // reload admin page to fetch members and reviews
-      router.get("/admin");
-    },
+    // don't force a second client-side GET; let Inertia follow server redirect and supply flash
     onError: (errors) => {
       loginError.value = errors?.message || "Invalid credentials";
+      console.log("Login error:", errors);
     },
   });
 };
@@ -73,11 +78,18 @@ const deleteReview = (id) => {
       <div v-if="requiresAuth">
         <div class="max-w-md mx-auto bg-slate-800 rounded p-6 border border-slate-700">
           <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
+          <div
+            v-if="loginError"
+            class="mb-4 rounded-md bg-red-600/20 border border-red-600 text-red-200 p-3">
+            {{ loginError }}
+          </div>
           <div class="space-y-4">
+            <div class="flex flex-col gap-4 font-semibold">Username</div>
             <input
               v-model="loginForm.username"
               placeholder="Username"
               class="w-full px-4 py-2 rounded bg-slate-700 border border-slate-600" />
+            <div class="flex flex-col gap-4 font-semibold">Password</div>
             <input
               v-model="loginForm.password"
               type="password"
