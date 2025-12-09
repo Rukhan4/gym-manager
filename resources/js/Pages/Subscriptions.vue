@@ -36,6 +36,12 @@ const newMember = ref({
 // Carousel features
 const carouselPause = ref(false);
 const currentFeature = ref(0);
+// animation state for smooth track-based carousel
+const animating = ref(false);
+const trackOffset = ref(0); // percent offset: 0, -100, 100
+const transitionMs = 600; // transition duration in ms
+
+// Feature data
 const features = [
   {
     id: 1,
@@ -86,15 +92,51 @@ const startCarousel = () => {
   if (carouselTimer) return;
   carouselTimer = setInterval(() => {
     if (!carouselPause.value) {
-      currentFeature.value = (currentFeature.value + 1) % features.length;
+      // trigger smooth next transition
+      goNext();
     }
-  }, 4000);
+  }, 7000);
 };
 const stopCarousel = () => {
   if (carouselTimer) {
     clearInterval(carouselTimer);
     carouselTimer = null;
   }
+};
+
+// compute the three features to display (left, center, right)
+import { computed } from "vue";
+const displayedIndices = computed(() => {
+  const n = features.length;
+  const center = currentFeature.value;
+  const left = (center - 1 + n) % n;
+  const right = (center + 1) % n;
+  return [left, center, right];
+});
+
+const goNext = () => {
+  if (animating.value) return;
+  animating.value = true;
+  // slide left
+  trackOffset.value = -100;
+  setTimeout(() => {
+    currentFeature.value = (currentFeature.value + 1) % features.length;
+    // reset track instantly
+    trackOffset.value = 0;
+    animating.value = false;
+  }, transitionMs);
+};
+
+const goPrev = () => {
+  if (animating.value) return;
+  animating.value = true;
+  // slide right
+  trackOffset.value = 100;
+  setTimeout(() => {
+    currentFeature.value = (currentFeature.value - 1 + features.length) % features.length;
+    trackOffset.value = 0;
+    animating.value = false;
+  }, transitionMs);
 };
 
 onMounted(() => startCarousel());
@@ -255,15 +297,15 @@ const updateMember = () => {
           <p class="text-xl text-slate-400">Everything you need for your fitness journey</p>
         </div>
 
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-7xl mx-auto px-4">
           <div
-            class="relative w-full flex items-center justify-center gap-4 py-6"
+            class="relative flex items-stretch justify-between gap-8 py-8 min-h-80"
             @mouseenter="carouselPause = true"
             @mouseleave="carouselPause = false">
             <!-- Left arrow -->
             <button
-              @click="currentFeature = (currentFeature + features.length - 1) % features.length"
-              class="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0">
+              @click="goPrev"
+              class="hidden lg:flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0 self-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -273,48 +315,61 @@ const updateMember = () => {
               </svg>
             </button>
 
-            <!-- Left feature -->
-            <div
-              class="w-80 transform transition-all duration-1000 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
-              :style="{ transform: 'translateX(-20px)' }"
-              :class="{ 'opacity-70 scale-90': true }">
-              <h4 class="text-lg font-semibold text-emerald-300">
-                {{ features[(currentFeature + features.length - 1) % features.length].title }}
-              </h4>
-              <p class="text-sm text-slate-300 mt-2">
-                {{ features[(currentFeature + features.length - 1) % features.length].subtitle }}
-              </p>
-            </div>
+            <!-- Carousel track (3-slot technique) -->
+            <div class="flex-1 flex items-center justify-center overflow-hidden">
+              <div class="w-full" style="overflow: hidden">
+                <div
+                  class="flex w-[300%]"
+                  :style="{
+                    transform: `translateX(${-100 + trackOffset}%)`,
+                    transition: resetting ? 'none' : `transform ${transitionMs}ms ease-in-out`,
+                  }">
+                  <div class="w-1/3 px-3 flex-shrink-0">
+                    <div
+                      class="h-full p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 flex flex-col justify-center">
+                      <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
+                        {{ features[displayedIndices[0]].title }}
+                      </h4>
+                      <p class="text-sm text-slate-300 mt-2 line-clamp-2">
+                        {{ features[displayedIndices[0]].subtitle }}
+                      </p>
+                    </div>
+                  </div>
 
-            <!-- Center feature -->
-            <div
-              class="w-96 transform transition-all duration-1000 ease-in-out text-center p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20"
-              :style="{ transform: 'translateX(0)' }"
-              :class="{ 'scale-100': true }">
-              <h3 class="text-2xl font-bold text-white">{{ features[currentFeature].title }}</h3>
-              <p class="text-sm text-emerald-300 mt-2 font-semibold">
-                {{ features[currentFeature].subtitle }}
-              </p>
-              <p class="text-slate-300 mt-4">{{ features[currentFeature].details }}</p>
-            </div>
+                  <div class="w-1/3 px-3 flex-shrink-0">
+                    <div
+                      class="h-full p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20 min-h-96 flex flex-col justify-center">
+                      <h3 class="text-2xl font-bold text-white">
+                        {{ features[displayedIndices[1]].title }}
+                      </h3>
+                      <p class="text-sm text-emerald-300 mt-2 font-semibold">
+                        {{ features[displayedIndices[1]].subtitle }}
+                      </p>
+                      <p class="text-slate-300 mt-4 text-sm leading-relaxed">
+                        {{ features[displayedIndices[1]].details }}
+                      </p>
+                    </div>
+                  </div>
 
-            <!-- Right feature -->
-            <div
-              class="w-80 transform transition-all duration-1000 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
-              :style="{ transform: 'translateX(20px)' }"
-              :class="{ 'opacity-70 scale-90': true }">
-              <h4 class="text-lg font-semibold text-emerald-300">
-                {{ features[(currentFeature + 1) % features.length].title }}
-              </h4>
-              <p class="text-sm text-slate-300 mt-2">
-                {{ features[(currentFeature + 1) % features.length].subtitle }}
-              </p>
+                  <div class="w-1/3 px-3 flex-shrink-0">
+                    <div
+                      class="h-full p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 flex flex-col justify-center">
+                      <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
+                        {{ features[displayedIndices[2]].title }}
+                      </h4>
+                      <p class="text-sm text-slate-300 mt-2 line-clamp-2">
+                        {{ features[displayedIndices[2]].subtitle }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Right arrow -->
             <button
-              @click="currentFeature = (currentFeature + 1) % features.length"
-              class="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0">
+              @click="goNext"
+              class="hidden lg:flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0 self-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -325,14 +380,14 @@ const updateMember = () => {
             </button>
           </div>
           <!-- Dots -->
-          <div class="flex items-center justify-center gap-2 mt-4">
+          <div class="flex items-center justify-center gap-2 mt-8">
             <button
               v-for="(f, i) in features"
               :key="f.id"
               @click="currentFeature = i"
               :class="{
-                'w-3 h-3 rounded-full': true,
-                'bg-emerald-400': currentFeature === i,
+                'w-3 h-3 rounded-full transition-all duration-300': true,
+                'bg-emerald-400 w-8': currentFeature === i,
                 'bg-slate-700': currentFeature !== i,
               }"></button>
           </div>
