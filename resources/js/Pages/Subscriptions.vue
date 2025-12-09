@@ -199,11 +199,6 @@ const testimonials = [
   },
   {
     id: 4,
-    text: "The HIIT classes are intense and transformative. What impressed me most is how the trainers are ISSA certified with real PT experience—they know what they're doing. MOE Gyms isn't just a gym, it's a community that lifts you up!",
-    name: "David Rodriguez",
-  },
-  {
-    id: 5,
     text: "I tried yoga and pilates classes here, and the instructors are phenomenal. Combined with the premium facilities and supportive staff, I finally found a gym where I feel comfortable and inspired every single day.",
     name: "Emma Thompson",
   },
@@ -508,8 +503,8 @@ const stopTestimonialCarousel = () => {
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-24 bg-slate-900/50">
       <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">What Our Members Say</h2>
+        <div class="text-center mb-8">
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Testimonials</h2>
           <p class="text-xl text-slate-400">Real stories from real members</p>
         </div>
 
@@ -533,14 +528,6 @@ const stopTestimonialCarousel = () => {
 
             <!-- Testimonial card -->
             <div class="px-16 text-center">
-              <!-- Quote icon -->
-              <div class="flex justify-center mb-6">
-                <svg class="w-16 h-16 text-emerald-500/40" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M3 21c3 0 7-1 7-8V5c0-1.25-4.716-5-7-5-6 0-6 5.338-6 10.53C0.016 11.6.008 15.93 0 18c0 1 0 4 6.002 4.001C16.768 22.433 24 20.033 24 8.5 24 5.5 21 3 17.5 3S13 5.5 13 8.5" />
-                </svg>
-              </div>
-
               <!-- Testimonial text -->
               <p
                 class="text-lg text-slate-300 mb-6 leading-relaxed transition-all duration-500"
