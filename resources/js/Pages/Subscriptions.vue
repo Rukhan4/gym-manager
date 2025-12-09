@@ -292,7 +292,7 @@ const updateMember = () => {
           </p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-3 gap-6 max-w-7xl mx-auto">
           <div
             class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
             <div class="text-4xl mb-4"></div>
