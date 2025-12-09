@@ -75,7 +75,7 @@ const features = [
     title: "Certified Trainers",
     subtitle: "ISSA Certified with PT experience",
     details:
-      "All our trainers are ISSA certified with extensive personal training experience. They develop customized workout plans and form coaching to help you reach your goals safely and effectively.",
+      "All our trainers are ISSA certified with extensive personal training experience. They develop customized workout and nutrition plans to help you reach your goals safely and effectively.",
   },
   {
     id: 6,
