@@ -283,6 +283,11 @@ const stopTestimonialCarousel = () => {
               >Facility</a
             >
             <a
+              href="#testimonials"
+              class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
+              >Testimonials</a
+            >
+            <a
               href="#join"
               class="text-slate-300 hover:text-emerald-400 transition-colors font-medium"
               >Join Now</a
