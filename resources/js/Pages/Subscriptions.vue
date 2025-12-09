@@ -292,7 +292,7 @@ const updateMember = () => {
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-6 max-w-7xl mx-auto">
           <div
             class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
             <div class="text-4xl mb-4"></div>
@@ -304,12 +304,6 @@ const updateMember = () => {
             <div class="text-4xl mb-4"></div>
             <h3 class="text-xl font-bold text-white mb-2">Cardio Zone</h3>
             <p class="text-slate-400">Premium cardio machines</p>
-          </div>
-          <div
-            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
-            <div class="text-4xl mb-4"></div>
-            <h3 class="text-xl font-bold text-white mb-2">Yoga Studio</h3>
-            <p class="text-slate-400">Peaceful practice space</p>
           </div>
           <div
             class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
