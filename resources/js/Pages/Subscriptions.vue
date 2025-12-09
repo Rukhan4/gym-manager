@@ -39,21 +39,45 @@ const currentFeature = ref(0);
 const features = [
   {
     id: 1,
-    title: "Friendly Staff",
-    subtitle: "Welcoming trainers and helpful support",
-    details: "Our team will guide you with a friendly approach so you feel supported from day one.",
+    title: "Individualized Classes",
+    subtitle: "HIIT • Yoga • Pilates",
+    details:
+      "Tailored group classes for all fitness levels. Whether you're looking for high-intensity interval training, mindful yoga sessions, or core-strengthening pilates, we have instructors who guide you through every step.",
   },
   {
     id: 2,
-    title: "Premium Facilities",
+    title: "Extra Amenities",
     subtitle: "Sauna & Smoothie Bar",
-    details: "Relax in our sauna and recharge at the smoothie bar after a great workout.",
+    details:
+      "Relax and recover in our state-of-the-art sauna, then refuel at our premium smoothie bar with fresh, nutritious blends made daily to support your fitness goals.",
   },
   {
     id: 3,
-    title: "Individualized Classes",
-    subtitle: "HIIT • Yoga • Pilates",
-    details: "Tailored group classes for all levels: high intensity or calming stretches.",
+    title: "Friendly Staff",
+    subtitle: "Welcoming trainers and support",
+    details:
+      "Our team genuinely cares about your success. We're here to answer questions, provide modifications, and create an encouraging environment where everyone feels welcome.",
+  },
+  {
+    id: 4,
+    title: "State of the Art Equipment",
+    subtitle: "Modern machines and free weights",
+    details:
+      "We've invested in premium equipment including the latest cardio machines, strength training rigs, and functional fitness tools to support every type of workout.",
+  },
+  {
+    id: 5,
+    title: "Certified Trainers",
+    subtitle: "ISSA Certified with PT experience",
+    details:
+      "All our trainers are ISSA certified with extensive personal training experience. They develop customized workout plans and form coaching to help you reach your goals safely and effectively.",
+  },
+  {
+    id: 6,
+    title: "Community Driven",
+    subtitle: "More than just a gym",
+    details:
+      "We believe fitness is better together. From group challenges to member events, we foster a supportive community where members motivate each other and celebrate victories together.",
   },
 ];
 
@@ -251,7 +275,8 @@ const updateMember = () => {
 
             <!-- Left feature -->
             <div
-              class="w-80 transform transition-all duration-700 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              class="w-80 transform transition-all duration-1000 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              :style="{ transform: 'translateX(-20px)' }"
               :class="{ 'opacity-70 scale-90': true }">
               <h4 class="text-lg font-semibold text-emerald-300">
                 {{ features[(currentFeature + features.length - 1) % features.length].title }}
@@ -263,7 +288,8 @@ const updateMember = () => {
 
             <!-- Center feature -->
             <div
-              class="w-96 transform transition-all duration-700 ease-in-out text-center p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20"
+              class="w-96 transform transition-all duration-1000 ease-in-out text-center p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20"
+              :style="{ transform: 'translateX(0)' }"
               :class="{ 'scale-100': true }">
               <h3 class="text-2xl font-bold text-white">{{ features[currentFeature].title }}</h3>
               <p class="text-sm text-emerald-300 mt-2 font-semibold">
@@ -274,7 +300,8 @@ const updateMember = () => {
 
             <!-- Right feature -->
             <div
-              class="w-80 transform transition-all duration-700 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              class="w-80 transform transition-all duration-1000 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              :style="{ transform: 'translateX(20px)' }"
               :class="{ 'opacity-70 scale-90': true }">
               <h4 class="text-lg font-semibold text-emerald-300">
                 {{ features[(currentFeature + 1) % features.length].title }}
