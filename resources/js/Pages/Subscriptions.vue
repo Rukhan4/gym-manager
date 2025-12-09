@@ -588,7 +588,7 @@ const stopTestimonialCarousel = () => {
 
     <!-- Membership Plans -->
 
-    <section id="plans" class="py-24 bg-slate-900/50">
+    <section id="plans" class="py-24 bg-slate-950">
       <div class="container mx-auto px-6">
         <div class="text-center mb-16">
           <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Membership Plans</h2>
@@ -636,7 +636,9 @@ const stopTestimonialCarousel = () => {
     </section>
 
     <!-- Join Section -->
-    <section id="join" class="py-24 bg-slate-950">
+    <section
+      id="join"
+      class="py-24 bg-gradient-to-br bg-emerald-200/10 from-slate-900 to-slate-950">
       <div class="container mx-auto px-6">
         <div class="max-w-4xl mx-auto">
           <div class="text-center mb-12">
@@ -717,24 +719,26 @@ const stopTestimonialCarousel = () => {
     </section>
 
     <!-- Review CTA -->
-    <div class="text-center mt-16">
-      <Link
-        href="/reviews"
-        class="inline-flex items-center gap-3 px-8 py-4 mb-5 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-black font-bold rounded-xl shadow-lg hover:shadow-yellow-400/50 transform hover:scale-105 active:scale-95 transition-all duration-200">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-        </svg>
-        Leave a Review
-      </Link>
-    </div>
+    <section class="py-12 bg-slate-950">
+      <div class="text-center">
+        <Link
+          href="/reviews"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-black font-bold rounded-xl shadow-lg hover:shadow-yellow-400/50 transform hover:scale-105 active:scale-95 transition-all duration-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+          Leave a Review
+        </Link>
+      </div>
+    </section>
 
     <!-- Footer -->
-    <footer>
-      <div class="w-full max-w-7xl mx-auto px-6 py-8">
+    <footer class="bg-slate-950">
+      <div class="w-full max-w-7xl mx-auto px-6 py-3">
         <div class="text-center">
           <div class="flex items-center justify-center gap-2 mb-3">
             <svg
