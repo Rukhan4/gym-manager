@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, watchEffect, onMounted, onBeforeUnmount } from "vue";
+import { ref, watch, watchEffect, onMounted, onBeforeUnmount, computed } from "vue";
 import { router, usePage, Link } from "@inertiajs/vue3";
 
 const props = defineProps({
@@ -36,10 +36,9 @@ const newMember = ref({
 // Carousel features
 const carouselPause = ref(false);
 const currentFeature = ref(0);
-// animation state for smooth track-based carousel
+// animation state for simpler carousel
 const animating = ref(false);
-const trackOffset = ref(0); // percent offset: 0, -100, 100
-const transitionMs = 600; // transition duration in ms
+const transitionMs = 500; // transition duration in ms
 
 // Feature data
 const features = [
@@ -88,14 +87,12 @@ const features = [
 ];
 
 let carouselTimer = null;
+// simple auto-advance helpers
 const startCarousel = () => {
   if (carouselTimer) return;
   carouselTimer = setInterval(() => {
-    if (!carouselPause.value) {
-      // trigger smooth next transition
-      goNext();
-    }
-  }, 7000);
+    if (!carouselPause.value) goNext();
+  }, 4000);
 };
 const stopCarousel = () => {
   if (carouselTimer) {
@@ -104,8 +101,7 @@ const stopCarousel = () => {
   }
 };
 
-// compute the three features to display (left, center, right)
-import { computed } from "vue";
+// computed indices and objects for the three visible cards
 const displayedIndices = computed(() => {
   const n = features.length;
   const center = currentFeature.value;
@@ -113,30 +109,58 @@ const displayedIndices = computed(() => {
   const right = (center + 1) % n;
   return [left, center, right];
 });
-
+const displayedLeft = computed(
+  () => features[displayedIndices.value[0]] || { title: "", subtitle: "", details: "" }
+);
+const displayedCenter = computed(
+  () => features[displayedIndices.value[1]] || { title: "", subtitle: "", details: "" }
+);
+const displayedRight = computed(
+  () => features[displayedIndices.value[2]] || { title: "", subtitle: "", details: "" }
+);
 const goNext = () => {
   if (animating.value) return;
   animating.value = true;
-  // slide left
-  trackOffset.value = -100;
-  setTimeout(() => {
-    currentFeature.value = (currentFeature.value + 1) % features.length;
-    // reset track instantly
-    trackOffset.value = 0;
-    animating.value = false;
-  }, transitionMs);
+  currentFeature.value = (currentFeature.value + 1) % features.length;
+  setTimeout(() => (animating.value = false), transitionMs);
 };
 
 const goPrev = () => {
   if (animating.value) return;
   animating.value = true;
-  // slide right
-  trackOffset.value = 100;
-  setTimeout(() => {
-    currentFeature.value = (currentFeature.value - 1 + features.length) % features.length;
-    trackOffset.value = 0;
-    animating.value = false;
-  }, transitionMs);
+  currentFeature.value = (currentFeature.value - 1 + features.length) % features.length;
+  setTimeout(() => (animating.value = false), transitionMs);
+};
+
+// Animate to a specific index (dot clicks). For adjacent moves use goNext/goPrev for animation; for further distance, step repeatedly.
+const goTo = (target) => {
+  if (animating.value) return;
+  const n = features.length;
+  const cur = currentFeature.value;
+  if (target === cur) return;
+  // compute shortest direction
+  const forwardDist = (target - cur + n) % n;
+  const backwardDist = (cur - target + n) % n;
+  if (forwardDist <= backwardDist) {
+    // move forward forwardDist times (chain)
+    const step = () => {
+      if (currentFeature.value === target) return;
+      goNext();
+      setTimeout(() => {
+        step();
+      }, transitionMs + 30);
+    };
+    step();
+  } else {
+    const step = () => {
+      if (currentFeature.value === target) return;
+      goPrev();
+      setTimeout(() => {
+        step();
+      }, transitionMs + 30);
+    };
+    step();
+  }
 };
 
 onMounted(() => startCarousel());
@@ -315,54 +339,41 @@ const updateMember = () => {
               </svg>
             </button>
 
-            <!-- Carousel track (3-slot technique) -->
-            <div class="flex-1 flex items-center justify-center overflow-hidden">
-              <div class="w-full" style="overflow: hidden">
-                <div
-                  class="flex w-[300%]"
-                  :style="{
-                    transform: `translateX(${-100 + trackOffset}%)`,
-                    transition: resetting ? 'none' : `transform ${transitionMs}ms ease-in-out`,
-                  }">
-                  <div class="w-1/3 px-3 flex-shrink-0">
-                    <div
-                      class="h-full p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 flex flex-col justify-center">
-                      <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
-                        {{ features[displayedIndices[0]].title }}
-                      </h4>
-                      <p class="text-sm text-slate-300 mt-2 line-clamp-2">
-                        {{ features[displayedIndices[0]].subtitle }}
-                      </p>
-                    </div>
-                  </div>
+            <!-- Simple 3-card carousel -->
+            <div class="flex-1 flex items-center justify-center gap-6">
+              <!-- Left -->
+              <div
+                class="w-72 p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 transition-all duration-500 transform"
+                :class="{ 'opacity-80 scale-95': true }">
+                <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
+                  {{ displayedLeft.title }}
+                </h4>
+                <p class="text-sm text-slate-300 mt-2 line-clamp-2">{{ displayedLeft.subtitle }}</p>
+              </div>
 
-                  <div class="w-1/3 px-3 flex-shrink-0">
-                    <div
-                      class="h-full p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20 min-h-96 flex flex-col justify-center">
-                      <h3 class="text-2xl font-bold text-white">
-                        {{ features[displayedIndices[1]].title }}
-                      </h3>
-                      <p class="text-sm text-emerald-300 mt-2 font-semibold">
-                        {{ features[displayedIndices[1]].subtitle }}
-                      </p>
-                      <p class="text-slate-300 mt-4 text-sm leading-relaxed">
-                        {{ features[displayedIndices[1]].details }}
-                      </p>
-                    </div>
-                  </div>
+              <!-- Center -->
+              <div
+                class="w-96 p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20 min-h-96 transition-all duration-500 transform"
+                :class="{ 'scale-105': !animating, 'opacity-100': true }">
+                <h3 class="text-2xl font-bold text-white">{{ displayedCenter.title }}</h3>
+                <p class="text-sm text-emerald-300 mt-2 font-semibold">
+                  {{ displayedCenter.subtitle }}
+                </p>
+                <p class="text-slate-300 mt-4 text-sm leading-relaxed">
+                  {{ displayedCenter.details }}
+                </p>
+              </div>
 
-                  <div class="w-1/3 px-3 flex-shrink-0">
-                    <div
-                      class="h-full p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 flex flex-col justify-center">
-                      <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
-                        {{ features[displayedIndices[2]].title }}
-                      </h4>
-                      <p class="text-sm text-slate-300 mt-2 line-clamp-2">
-                        {{ features[displayedIndices[2]].subtitle }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <!-- Right -->
+              <div
+                class="w-72 p-6 rounded-2xl bg-slate-800/60 border border-slate-700 min-h-72 transition-all duration-500 transform"
+                :class="{ 'opacity-80 scale-95': true }">
+                <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
+                  {{ displayedRight.title }}
+                </h4>
+                <p class="text-sm text-slate-300 mt-2 line-clamp-2">
+                  {{ displayedRight.subtitle }}
+                </p>
               </div>
             </div>
 
