@@ -23,8 +23,31 @@ const login = () => {
   router.post("/admin/login", loginForm.value, {
     // don't force a second client-side GET; let Inertia follow server redirect and supply flash
     onError: (errors) => {
-      loginError.value = errors?.message || "Invalid credentials";
-      console.log("Login error:", errors);
+      try {
+        // direct message returned from server: { message: '...' }
+        if (errors && typeof errors === "object" && errors.message) {
+          loginError.value = errors.message;
+          return;
+        }
+
+        // axios-like shape
+        if (errors?.response?.data?.message) {
+          loginError.value = errors.response.data.message;
+          return;
+        }
+
+        // validation-style object { field: ['msg'] }
+        if (errors && typeof errors === "object") {
+          const first = Object.values(errors)[0];
+          loginError.value = Array.isArray(first) ? first.join("\n") : first;
+          return;
+        }
+
+        loginError.value = "Invalid credentials";
+      } catch (e) {
+        console.error("Error parsing login error", e, errors);
+        loginError.value = "Invalid credentials";
+      }
     },
   });
 };
@@ -78,11 +101,6 @@ const deleteReview = (id) => {
       <div v-if="requiresAuth">
         <div class="max-w-md mx-auto bg-slate-800 rounded p-6 border border-slate-700">
           <h2 class="text-xl font-semibold mb-4">Admin Login</h2>
-          <div
-            v-if="loginError"
-            class="mb-4 rounded-md bg-red-600/20 border border-red-600 text-red-200 p-3">
-            {{ loginError }}
-          </div>
           <div class="space-y-4">
             <div class="flex flex-col gap-4 font-semibold">Username</div>
             <input

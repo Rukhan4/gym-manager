@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use App\Models\Member;
 use App\Models\Review;
@@ -42,6 +43,14 @@ class AdminController extends Controller
         if ($data['username'] === $username && $data['password'] === $password) {
             $request->session()->put('is_admin', true);
             return redirect('/admin');
+        }
+
+        // For Inertia/XHR requests, throw a ValidationException so Laravel/Inertia
+        // returns a 422 with an `errors` object that the client understands.
+        if ($request->header('X-Inertia') || $request->wantsJson()) {
+            throw ValidationException::withMessages([
+                'username' => ['Invalid credentials'],
+            ]);
         }
 
         return redirect('/admin')->with('error', 'Invalid credentials');
