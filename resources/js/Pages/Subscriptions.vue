@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect, onMounted, onBeforeUnmount } from "vue";
 import { router, usePage, Link } from "@inertiajs/vue3";
 
 const props = defineProps({
@@ -32,6 +32,49 @@ const newMember = ref({
   email: "",
   subscription_id: "",
 });
+
+// Carousel features
+const carouselPause = ref(false);
+const currentFeature = ref(0);
+const features = [
+  {
+    id: 1,
+    title: "Friendly Staff",
+    subtitle: "Welcoming trainers and helpful support",
+    details: "Our team will guide you with a friendly approach so you feel supported from day one.",
+  },
+  {
+    id: 2,
+    title: "Premium Facilities",
+    subtitle: "Sauna & Smoothie Bar",
+    details: "Relax in our sauna and recharge at the smoothie bar after a great workout.",
+  },
+  {
+    id: 3,
+    title: "Individualized Classes",
+    subtitle: "HIIT • Yoga • Pilates",
+    details: "Tailored group classes for all levels: high intensity or calming stretches.",
+  },
+];
+
+let carouselTimer = null;
+const startCarousel = () => {
+  if (carouselTimer) return;
+  carouselTimer = setInterval(() => {
+    if (!carouselPause.value) {
+      currentFeature.value = (currentFeature.value + 1) % features.length;
+    }
+  }, 4000);
+};
+const stopCarousel = () => {
+  if (carouselTimer) {
+    clearInterval(carouselTimer);
+    carouselTimer = null;
+  }
+};
+
+onMounted(() => startCarousel());
+onBeforeUnmount(() => stopCarousel());
 
 // Add new Member
 const addMember = () => {
@@ -188,91 +231,83 @@ const updateMember = () => {
           <p class="text-xl text-slate-400">Everything you need for your fitness journey</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <!-- Feature 1 -->
-          <div class="relative group">
-            <div
-              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
-            <div
-              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
-              <div
-                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
-                <svg
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                </svg>
-              </div>
-              <h3 class="text-2xl font-bold text-white mb-3">MODERN EQUIPMENT</h3>
-              <p class="text-lg text-emerald-400 font-semibold mb-3">Gym Technology at its Best</p>
-              <p class="text-slate-400 leading-relaxed">
-                We have outfitted our facility with world-class machines and training equipment.
-              </p>
-            </div>
-          </div>
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="relative w-full flex items-center justify-center gap-4 py-6"
+            @mouseenter="carouselPause = true"
+            @mouseleave="carouselPause = false">
+            <!-- Left arrow -->
+            <button
+              @click="currentFeature = (currentFeature + features.length - 1) % features.length"
+              class="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-          <!-- Feature 2 -->
-          <div class="relative group">
+            <!-- Left feature -->
             <div
-              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
-            <div
-              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
-              <div
-                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
-                <svg
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <h3 class="text-2xl font-bold text-white mb-3">CERTIFIED TRAINERS</h3>
-              <p class="text-lg text-emerald-400 font-semibold mb-3">Who keep you motivated</p>
-              <p class="text-slate-400 leading-relaxed">
-                Dedicated and experienced trainers who love working with our members to see them
-                achieve their fitness goals.
+              class="w-80 transform transition-all duration-700 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              :class="{ 'opacity-70 scale-90': true }">
+              <h4 class="text-lg font-semibold text-emerald-300">
+                {{ features[(currentFeature + features.length - 1) % features.length].title }}
+              </h4>
+              <p class="text-sm text-slate-300 mt-2">
+                {{ features[(currentFeature + features.length - 1) % features.length].subtitle }}
               </p>
             </div>
-          </div>
 
-          <!-- Feature 3 -->
-          <div class="relative group">
+            <!-- Center feature -->
             <div
-              class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+              class="w-96 transform transition-all duration-700 ease-in-out text-center p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/20"
+              :class="{ 'scale-100': true }">
+              <h3 class="text-2xl font-bold text-white">{{ features[currentFeature].title }}</h3>
+              <p class="text-sm text-emerald-300 mt-2 font-semibold">
+                {{ features[currentFeature].subtitle }}
+              </p>
+              <p class="text-slate-300 mt-4">{{ features[currentFeature].details }}</p>
+            </div>
+
+            <!-- Right feature -->
             <div
-              class="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-emerald-500 transition-all duration-300 h-full">
-              <div
-                class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
-                <svg
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 class="text-2xl font-bold text-white mb-3">AFFORDABLE PRICES</h3>
-              <p class="text-lg text-emerald-400 font-semibold mb-3">So you don't miss out</p>
-              <p class="text-slate-400 leading-relaxed">
-                We have made it easy for you to join as a member. Check out our membership fees and
-                special packages.
+              class="w-80 transform transition-all duration-700 ease-in-out text-center p-6 rounded-2xl bg-slate-800/60 border border-slate-700"
+              :class="{ 'opacity-70 scale-90': true }">
+              <h4 class="text-lg font-semibold text-emerald-300">
+                {{ features[(currentFeature + 1) % features.length].title }}
+              </h4>
+              <p class="text-sm text-slate-300 mt-2">
+                {{ features[(currentFeature + 1) % features.length].subtitle }}
               </p>
             </div>
+
+            <!-- Right arrow -->
+            <button
+              @click="currentFeature = (currentFeature + 1) % features.length"
+              class="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+          <!-- Dots -->
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <button
+              v-for="(f, i) in features"
+              :key="f.id"
+              @click="currentFeature = i"
+              :class="{
+                'w-3 h-3 rounded-full': true,
+                'bg-emerald-400': currentFeature === i,
+                'bg-slate-700': currentFeature !== i,
+              }"></button>
           </div>
         </div>
       </div>
@@ -308,8 +343,8 @@ const updateMember = () => {
           <div
             class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition-all transform hover:scale-105">
             <div class="text-4xl mb-4"></div>
-            <h3 class="text-xl font-bold text-white mb-2">Combat Zone</h3>
-            <p class="text-slate-400">Boxing & martial arts area</p>
+            <h3 class="text-xl font-bold text-white mb-2">Yoga Zone</h3>
+            <p class="text-slate-400">Peaceful practice space</p>
           </div>
         </div>
 
@@ -494,11 +529,9 @@ const updateMember = () => {
                 stroke-width="2"
                 d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span class="text-xl font-bold text-white">Developed by Surur Khan</span>
+            <span class="text-xl font-bold text-white">FitTrack Pro</span>
           </div>
-          <p class="text-slate-300 text-sm">
-            &copy; 2025 Gym Membership Manager. All rights reserved.
-          </p>
+          <p class="text-slate-300 text-sm">&copy; 2025 FitTrack Pro. All rights reserved.</p>
         </div>
       </div>
     </footer>
