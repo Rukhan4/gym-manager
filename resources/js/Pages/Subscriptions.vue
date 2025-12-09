@@ -92,7 +92,7 @@ const startCarousel = () => {
   if (carouselTimer) return;
   carouselTimer = setInterval(() => {
     if (!carouselPause.value) goNext();
-  }, 4000);
+  }, 7000);
 };
 const stopCarousel = () => {
   if (carouselTimer) {
@@ -132,39 +132,14 @@ const goPrev = () => {
   setTimeout(() => (animating.value = false), transitionMs);
 };
 
-// Animate to a specific index (dot clicks). For adjacent moves use goNext/goPrev for animation; for further distance, step repeatedly.
-const goTo = (target) => {
-  if (animating.value) return;
-  const n = features.length;
-  const cur = currentFeature.value;
-  if (target === cur) return;
-  // compute shortest direction
-  const forwardDist = (target - cur + n) % n;
-  const backwardDist = (cur - target + n) % n;
-  if (forwardDist <= backwardDist) {
-    // move forward forwardDist times (chain)
-    const step = () => {
-      if (currentFeature.value === target) return;
-      goNext();
-      setTimeout(() => {
-        step();
-      }, transitionMs + 30);
-    };
-    step();
-  } else {
-    const step = () => {
-      if (currentFeature.value === target) return;
-      goPrev();
-      setTimeout(() => {
-        step();
-      }, transitionMs + 30);
-    };
-    step();
-  }
-};
-
-onMounted(() => startCarousel());
-onBeforeUnmount(() => stopCarousel());
+onMounted(() => {
+  startCarousel();
+  startTestimonialCarousel();
+});
+onBeforeUnmount(() => {
+  stopCarousel();
+  stopTestimonialCarousel();
+});
 
 // Add new Member
 const addMember = () => {
@@ -197,6 +172,70 @@ const updateMember = () => {
   router.put(`/members/${editMember.value.id}`, editMember.value, {
     onSuccess: () => (showEditModal.value = false),
   });
+};
+
+// Testimonials carousel
+const currentTestimonial = ref(0);
+const testimonialAnimating = ref(false);
+const testimonialTransitionMs = 500;
+const testimonialPause = ref(false);
+let testimonialTimer = null;
+
+const testimonials = [
+  {
+    id: 1,
+    text: "MOE Gyms has completely transformed my fitness journey. The certified trainers are incredibly knowledgeable and always motivate me to push harder. The premium facilities and diverse class options keep every workout fresh and exciting!",
+    name: "Sarah Johnson",
+  },
+  {
+    id: 2,
+    text: "I love the community atmosphere here. From the sauna to relax post-workout, to the smoothie bar for recovery nutrition, every amenity is top-notch. The individualized classes helped me find my perfect workout style.",
+    name: "Marcus Chen",
+  },
+  {
+    id: 3,
+    text: "Being open 24/7 is a game-changer for my schedule. The state-of-the-art equipment is maintained perfectly, and the friendly staff always goes the extra mile. I've made amazing friends through the member events!",
+    name: "Jessica Williams",
+  },
+  {
+    id: 4,
+    text: "The HIIT classes are intense and transformative. What impressed me most is how the trainers are ISSA certified with real PT experience—they know what they're doing. MOE Gyms isn't just a gym, it's a community that lifts you up!",
+    name: "David Rodriguez",
+  },
+  {
+    id: 5,
+    text: "I tried yoga and pilates classes here, and the instructors are phenomenal. Combined with the premium facilities and supportive staff, I finally found a gym where I feel comfortable and inspired every single day.",
+    name: "Emma Thompson",
+  },
+];
+
+const nextTestimonial = () => {
+  if (testimonialAnimating.value) return;
+  testimonialAnimating.value = true;
+  currentTestimonial.value = (currentTestimonial.value + 1) % testimonials.length;
+  setTimeout(() => (testimonialAnimating.value = false), testimonialTransitionMs);
+};
+
+const prevTestimonial = () => {
+  if (testimonialAnimating.value) return;
+  testimonialAnimating.value = true;
+  currentTestimonial.value =
+    (currentTestimonial.value - 1 + testimonials.length) % testimonials.length;
+  setTimeout(() => (testimonialAnimating.value = false), testimonialTransitionMs);
+};
+
+const startTestimonialCarousel = () => {
+  if (testimonialTimer) return;
+  testimonialTimer = setInterval(() => {
+    if (!testimonialPause.value) nextTestimonial();
+  }, 5000);
+};
+
+const stopTestimonialCarousel = () => {
+  if (testimonialTimer) {
+    clearInterval(testimonialTimer);
+    testimonialTimer = null;
+  }
 };
 </script>
 
@@ -348,7 +387,7 @@ const updateMember = () => {
                 <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
                   {{ displayedLeft.title }}
                 </h4>
-                <p class="text-sm text-slate-300 mt-2 line-clamp-2">{{ displayedLeft.subtitle }}</p>
+                <p class="text-slate-300 mt-2 line-clamp-2">{{ displayedLeft.subtitle }}</p>
               </div>
 
               <!-- Center -->
@@ -359,7 +398,7 @@ const updateMember = () => {
                 <p class="text-sm text-emerald-300 mt-2 font-semibold">
                   {{ displayedCenter.subtitle }}
                 </p>
-                <p class="text-slate-300 mt-4 text-sm leading-relaxed">
+                <p class="text-slate-300 mt-4 leading-relaxed">
                   {{ displayedCenter.details }}
                 </p>
               </div>
@@ -371,7 +410,7 @@ const updateMember = () => {
                 <h4 class="text-lg font-semibold text-emerald-300 line-clamp-2">
                   {{ displayedRight.title }}
                 </h4>
-                <p class="text-sm text-slate-300 mt-2 line-clamp-2">
+                <p class="text-slate-300 mt-2 line-clamp-2">
                   {{ displayedRight.subtitle }}
                 </p>
               </div>
@@ -461,7 +500,102 @@ const updateMember = () => {
       </div>
     </section>
 
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-24 bg-slate-900/50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">What Our Members Say</h2>
+          <p class="text-xl text-slate-400">Real stories from real members</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+          <div
+            class="relative py-12"
+            @mouseenter="testimonialPause = true"
+            @mouseleave="testimonialPause = false">
+            <!-- Left arrow -->
+            <button
+              @click="prevTestimonial"
+              class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 z-10">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <!-- Testimonial card -->
+            <div class="px-16 text-center">
+              <!-- Quote icon -->
+              <div class="flex justify-center mb-6">
+                <svg class="w-16 h-16 text-emerald-500/40" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M3 21c3 0 7-1 7-8V5c0-1.25-4.716-5-7-5-6 0-6 5.338-6 10.53C0.016 11.6.008 15.93 0 18c0 1 0 4 6.002 4.001C16.768 22.433 24 20.033 24 8.5 24 5.5 21 3 17.5 3S13 5.5 13 8.5" />
+                </svg>
+              </div>
+
+              <!-- Testimonial text -->
+              <p
+                class="text-lg text-slate-300 mb-6 leading-relaxed transition-all duration-500"
+                :class="{
+                  'opacity-100': !testimonialAnimating,
+                  'opacity-70': testimonialAnimating,
+                }">
+                "{{ testimonials[currentTestimonial].text }}"
+              </p>
+
+              <!-- Divider line -->
+              <div
+                class="w-20 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full mx-auto mb-6"></div>
+
+              <!-- Name and title -->
+              <div
+                class="transition-all duration-500"
+                :class="{
+                  'opacity-100': !testimonialAnimating,
+                  'opacity-70': testimonialAnimating,
+                }">
+                <h4 class="text-xl font-bold text-white">
+                  {{ testimonials[currentTestimonial].name }}
+                </h4>
+                <p class="text-sm text-emerald-400 mt-1">Gym Member</p>
+              </div>
+            </div>
+
+            <!-- Right arrow -->
+            <button
+              @click="nextTestimonial"
+              class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500/50 text-emerald-300 hover:text-emerald-200 transition-all duration-300 z-10">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Dots -->
+          <div class="flex items-center justify-center gap-2 mt-8">
+            <button
+              v-for="(t, i) in testimonials"
+              :key="t.id"
+              @click="currentTestimonial = i"
+              :class="{
+                'w-3 h-3 rounded-full transition-all duration-300': true,
+                'bg-emerald-400 w-8': currentTestimonial === i,
+                'bg-slate-700': currentTestimonial !== i,
+              }"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Membership Plans -->
+
     <section id="plans" class="py-24 bg-slate-900/50">
       <div class="container mx-auto px-6">
         <div class="text-center mb-16">
